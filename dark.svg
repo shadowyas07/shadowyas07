@@ -20,17 +20,23 @@
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
 
-    <!-- Corrected Typing Mask (Height increased to 100 to prevent clipping) -->
+    <!-- Typing Mask -->
     <mask id="typing-mask">
       <rect x="0" y="0" width="0" height="100" fill="white">
         <animate attributeName="width" from="0" to="600" dur="1.5s" fill="freeze" />
       </rect>
     </mask>
+
+    <!-- Radar sweep gradient (fait un vrai "cone" de scan au lieu d'une simple ligne) -->
+    <radialGradient id="sweep-grad" cx="0%" cy="50%" r="100%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0" />
+    </radialGradient>
   </defs>
 
   <!-- Background -->
   <rect width="1180" height="610" fill="url(#bg-grad)" rx="16" />
-  
+
   <!-- Subtle Ambient Glow -->
   <circle cx="590" cy="305" r="300" fill="#10B981" opacity="0.03" filter="url(#glow)" />
 
@@ -38,11 +44,11 @@
   <g transform="translate(30, 30)">
     <!-- Terminal Box -->
     <rect width="1120" height="550" fill="#070A08" rx="12" stroke="url(#terminal-border)" stroke-width="1.5" />
-    
+
     <!-- Header Bar -->
     <rect x="0" y="0" width="1120" height="45" fill="#10B981" opacity="0.05" rx="12" />
     <line x1="0" y1="45" x2="1120" y2="45" stroke="#10B981" stroke-opacity="0.2" stroke-width="1"/>
-    
+
     <!-- Terminal Title & Controls -->
     <circle cx="25" cy="22" r="5" fill="#EF4444" opacity="0.7" />
     <circle cx="41" cy="22" r="5" fill="#F59E0B" opacity="0.7" />
@@ -52,36 +58,92 @@
     <!-- VERTICAL DIVIDER LINE -->
     <line x1="420" y1="45" x2="420" y2="500" stroke="#10B981" stroke-opacity="0.2" stroke-width="1" />
 
-    <!-- LEFT SIDE: Cyber ASCII Art (Width: ~390px) -->
-    <g transform="translate(40, 90)">
-      <!-- Cyber Node Geometry -->
-      <g font-family="monospace" font-size="10" font-weight="bold" fill="#10B981" transform="translate(20, 40)">
-        <animateTransform attributeName="transform" type="translate" values="20,40; 20,35; 20,40" dur="6s" repeatCount="indefinite" />
-        
-        <text x="0" y="0">       o-----------o-----------o       </text>
-        <text x="0" y="15">       |           |           |       </text>
-        <text x="0" y="30">       |     [SYS_CORE_V1]     |       </text>
-        <text x="0" y="45">       |           |           |       </text>
-        <text x="0" y="60">   o---o-----------o-----------o---o   </text>
-        <text x="0" y="75">   |   |                       |   |   </text>
-        <text x="0" y="90">   o   |   SECURE_TUNNEL_EST   |   o   </text>
-        <text x="0" y="105">   |   |                       |   |   </text>
-        <text x="0" y="120">   o---o-----------o-----------o---o   </text>
-        <text x="0" y="135">       |           |           |       </text>
-        <text x="0" y="150">       |     [PORTS_ACTIVE]    |       </text>
-        <text x="0" y="165">       |           |           |       </text>
-        <text x="0" y="180">       o-----------o-----------o       </text>
+    <!-- LEFT SIDE: Cyber Radar & Live Network Auditing -->
+    <g transform="translate(40, 70)">
 
-        <!-- Vertical Scanning Line -->
-        <rect x="0" y="-10" width="310" height="2" fill="#10B981" opacity="0.6" filter="url(#glow)">
-          <animate attributeName="y" values="-10; 200; -10" dur="4s" repeatCount="indefinite" />
-        </rect>
+      <!-- RADAR SCANNER (animation enrichie) -->
+      <g transform="translate(170, 110)">
+
+        <!-- Anneau externe qui pulse doucement -->
+        <circle r="90" fill="none" stroke="#10B981" stroke-width="1" stroke-opacity="0.15">
+          <animate attributeName="r" values="90;96;90" dur="4s" repeatCount="indefinite" />
+          <animate attributeName="stroke-opacity" values="0.15;0.05;0.15" dur="4s" repeatCount="indefinite" />
+        </circle>
+        <circle r="65" fill="none" stroke="#10B981" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="4 4">
+          <!-- L'anneau pointillé tourne lentement en sens inverse du sweep -->
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="18s" repeatCount="indefinite" />
+        </circle>
+        <circle r="40" fill="none" stroke="#10B981" stroke-width="1" stroke-opacity="0.3" />
+        <circle r="15" fill="none" stroke="#10B981" stroke-width="1" stroke-opacity="0.5" />
+        <circle r="3" fill="#10B981" filter="url(#glow)" />
+
+        <!-- Radar Crosshairs -->
+        <line x1="-100" y1="0" x2="100" y2="0" stroke="#10B981" stroke-opacity="0.2" stroke-width="1" />
+        <line x1="0" y1="-100" x2="0" y2="100" stroke="#10B981" stroke-opacity="0.2" stroke-width="1" />
+
+        <!-- Cone de balayage (zone éclairée derrière la ligne) + ligne de scan -->
+        <g>
+          <path d="M 0 0 L 90 -22 A 92 92 0 0 1 90 22 Z" fill="url(#sweep-grad)">
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite" />
+          </path>
+          <line x1="0" y1="0" x2="90" y2="0" stroke="#10B981" stroke-width="2" filter="url(#glow)">
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="4s" repeatCount="indefinite" />
+          </line>
+        </g>
+
+        <!-- Cibles détectées : ping + fade, comme un vrai écho radar -->
+        <g>
+          <circle cx="45" cy="-35" r="3" fill="#10B981" filter="url(#glow)">
+            <animate attributeName="opacity" values="0;1;0.2;0" dur="3s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="45" cy="-35" r="3" fill="none" stroke="#10B981" stroke-width="1">
+            <animate attributeName="r" values="3;18;3" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.6;0;0" dur="3s" repeatCount="indefinite" />
+          </circle>
+        </g>
+        <g>
+          <circle cx="-50" cy="40" r="3" fill="#EF4444" filter="url(#glow)">
+            <animate attributeName="opacity" values="0;0.8;0.3;0" dur="4.2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="-50" cy="40" r="3" fill="none" stroke="#EF4444" stroke-width="1">
+            <animate attributeName="r" values="3;16;3" dur="4.2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.5;0;0" dur="4.2s" repeatCount="indefinite" />
+          </circle>
+        </g>
+        <!-- Nouvelle cible détectée ponctuellement en bas à droite -->
+        <circle cx="30" cy="55" r="2.5" fill="#10B981" filter="url(#glow)">
+          <animate attributeName="opacity" values="0;0;1;0.2;0" keyTimes="0;0.5;0.65;0.85;1" dur="5s" repeatCount="indefinite" />
+        </circle>
       </g>
 
-      <g font-family="monospace" font-size="11" fill="#10B981" opacity="0.6" transform="translate(30, 280)">
-        <text x="0" y="0"> [>] SECURE PROTOCOL: OK</text>
-        <text x="0" y="20"> [>] FIREWALL STATUS: SHIELD ON</text>
-        <text x="0" y="40"> [>] LOCALTIME: ACTIVE_NODE</text>
+      <!-- LIVE NETWORK LOGS (Scrolling hex/IP simulation) -->
+      <g font-family="monospace" font-size="11" fill="#10B981" transform="translate(15, 235)">
+        <g opacity="0.8">
+          <text x="0" y="20">TCP 192.168.1.54:80  -> [OPEN]</text>
+          <text x="0" y="38">TCP 192.168.1.109:22 -> <tspan fill="#EF4444" font-weight="bold">[BRUTEFORCE_RUNNING]</tspan></text>
+          <text x="0" y="56">UDP 192.168.1.254:53 -> [FILTERED]</text>
+          <text x="0" y="74">HEX SC: <tspan fill="#E0E0E0">0xEF 0x44 0x10 0xB9 0x9E 0x0B</tspan></text>
+          <animate attributeName="transform" type="translate" values="0,0; 0,-18; 0,0" dur="8s" repeatCount="indefinite" />
+        </g>
+      </g>
+
+      <!-- PENETRATION PROGRESS BAR -->
+      <g transform="translate(15, 345)">
+        <text x="0" y="15" font-family="monospace" font-size="11" fill="#10B981" font-weight="bold">BYPASSING_FIREWALL_LOAD:</text>
+        <rect x="0" y="25" width="310" height="8" rx="4" fill="#10B981" opacity="0.1" />
+        <rect x="0" y="25" height="8" rx="4" fill="#10B981" filter="url(#glow)">
+          <animate attributeName="width" values="0;70;140;290;310;310;0" keyTimes="0;0.2;0.4;0.8;0.9;0.95;1" dur="7s" repeatCount="indefinite" />
+        </rect>
+        <text x="320" y="33" font-family="monospace" font-size="11" fill="#10B981" font-weight="bold">
+          <animate attributeName="textContent" values="0%; 25%; 52%; 94%; 100%; STABLE; 0%" keyTimes="0;0.2;0.4;0.8;0.9;0.95;1" dur="7s" repeatCount="indefinite" />
+          0%
+        </text>
+      </g>
+
+      <!-- System Status Lines -->
+      <g font-family="monospace" font-size="11" fill="#10B981" opacity="0.6" transform="translate(15, 410)">
+        <text x="0" y="0"> [>] SECURE PROTOCOL: AES-256-GCM</text>
+        <text x="0" y="20"> [>] TUNNEL ENCRYPT: SSL_ESTABLISHED</text>
       </g>
     </g>
 
@@ -91,27 +153,27 @@
       <text x="0" y="30" font-family="monospace" font-size="15" fill="#059669">
         yassine@mainframe:~$ <tspan fill="#E0E0E0">whoami</tspan>
       </text>
-      
-      <!-- Name (Now properly masked with no cutoffs) -->
+
+      <!-- Name -->
       <text x="0" y="70" font-family="monospace" font-size="34" font-weight="bold" fill="#10B981" mask="url(#typing-mask)" filter="url(#glow)">
         Yassine Squalli Kadimi
       </text>
-      
-      <!-- Animated Monospace Roles -->
+
+      <!-- Animated Monospace Roles (titres ajustés : pas encore "ingénieur") -->
       <g font-family="monospace" font-size="17" fill="#E0E0E0" transform="translate(0, 115)">
         <text x="0" y="0" opacity="0">
-          > MPSI Engineer Student
+          > MPSI Student
           <animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.1;0.25;0.35;1" dur="12s" repeatCount="indefinite" />
         </text>
         <text x="0" y="0" opacity="0">
-          > Full Stack Developer
+          > Full Stack Dev Enthusiast
           <animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.25;0.35;0.58;0.68;1" dur="12s" repeatCount="indefinite" />
         </text>
         <text x="0" y="0" opacity="0">
-          > Cybersecurity &amp; Infra
+          > Aspiring Cybersecurity 
           <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;0.58;0.68;0.91;1" dur="12s" repeatCount="indefinite" />
         </text>
-        
+
         <!-- Blinking Cursor -->
         <rect x="250" y="-14" width="8" height="18" fill="#10B981">
           <animate attributeName="opacity" values="1;0;1" dur="0.9s" repeatCount="indefinite" />
@@ -125,7 +187,7 @@
         <text x="0" y="25"><tspan font-weight="bold" fill="#10B981">Sys.Education   = </tspan>"CPGE — MPSI"</text>
         <text x="0" y="50"><tspan font-weight="bold" fill="#10B981">Env.Focus       = </tspan>"Securing Networks &amp; Backends"</text>
         <text x="0" y="75"><tspan font-weight="bold" fill="#10B981">Net.Project     = </tspan>"Founder of Yiza (yizashop.com)"</text>
-        
+
         <!-- Reveal animation for text -->
         <rect x="-10" y="-15" width="480" height="110" fill="#070A08">
           <animate attributeName="height" from="110" to="0" begin="1s" dur="1.5s" fill="freeze" />
@@ -135,22 +197,22 @@
       <!-- Skills Section -->
       <g transform="translate(0, 305)">
         <text x="0" y="-15" font-family="monospace" font-size="13" fill="#059669" font-weight="bold">./execute_skills.sh</text>
-        
+
         <!-- Row 1 -->
         <g transform="translate(0, 0)">
           <rect width="80" height="28" rx="4" fill="rgba(16, 185, 129, 0.1)" stroke="#10B981" stroke-width="1"/>
           <text x="40" y="18" font-family="monospace" font-size="12" fill="#10B981" text-anchor="middle">Python</text>
-          
+
           <rect x="95" width="70" height="28" rx="4" fill="rgba(16, 185, 129, 0.1)" stroke="#10B981" stroke-width="1"/>
           <text x="130" y="18" font-family="monospace" font-size="12" fill="#10B981" text-anchor="middle">Flask</text>
-          
+
           <rect x="180" width="60" height="28" rx="4" fill="rgba(16, 185, 129, 0.1)" stroke="#10B981" stroke-width="1"/>
           <text x="210" y="18" font-family="monospace" font-size="12" fill="#10B981" text-anchor="middle">SQL</text>
 
           <rect x="255" width="60" height="28" rx="4" fill="rgba(16, 185, 129, 0.1)" stroke="#10B981" stroke-width="1"/>
           <text x="285" y="18" font-family="monospace" font-size="12" fill="#10B981" text-anchor="middle">Git</text>
         </g>
-        
+
         <!-- Row 2 -->
         <g transform="translate(0, 38)">
           <rect width="65" height="28" rx="4" fill="rgba(16, 185, 129, 0.05)" stroke="#059669" stroke-width="1"/>
@@ -161,7 +223,7 @@
 
           <rect x="150" width="95" height="28" rx="4" fill="rgba(16, 185, 129, 0.05)" stroke="#059669" stroke-width="1"/>
           <text x="197" y="18" font-family="monospace" font-size="12" fill="#E0E0E0" text-anchor="middle">Metasploit</text>
-          
+
           <rect x="255" width="85" height="28" rx="4" fill="rgba(16, 185, 129, 0.05)" stroke="#059669" stroke-width="1"/>
           <text x="297" y="18" font-family="monospace" font-size="12" fill="#E0E0E0" text-anchor="middle">Networks</text>
         </g>
@@ -171,7 +233,7 @@
     <!-- FOOTER DIVIDER -->
     <line x1="0" y1="500" x2="1120" y2="500" stroke="#10B981" stroke-opacity="0.2" stroke-width="1" />
 
-    <!-- FOOTER CONTENT (Unified Space) -->
+    <!-- FOOTER CONTENT -->
     <g transform="translate(40, 525)">
       <!-- Left Footer Info -->
       <g transform="translate(0, 0)">
@@ -183,17 +245,12 @@
 
       <!-- Right Footer Social Links -->
       <g transform="translate(730, -10)">
-        <!-- GitHub Terminal Icon -->
         <g transform="translate(0, 0)" fill="#10B981">
           <text x="0" y="14" font-family="monospace" font-size="13" font-weight="bold">[ GitHub ]</text>
         </g>
-        
-        <!-- LinkedIn Terminal Icon -->
         <g transform="translate(110, 0)" fill="#10B981">
           <text x="0" y="14" font-family="monospace" font-size="13" font-weight="bold">[ LinkedIn ]</text>
         </g>
-
-        <!-- Custom Port / Frame Speed -->
         <g transform="translate(225, 0)" fill="#059669" opacity="0.8">
           <text x="0" y="14" font-family="monospace" font-size="12">PORT::443/TCP</text>
         </g>
